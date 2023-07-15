@@ -5,10 +5,7 @@ sys.path.append('../')
 from framework.processor import Framework
 from app.urls import routes
 from framework.front_controllersF import fronts
-from pathlib import Path
 
-
-PROJ_PATH = Path(os.getcwd())
 
 
 class Run:
