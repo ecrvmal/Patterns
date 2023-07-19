@@ -1,6 +1,7 @@
 # from app.views import *
+from sys import path
+path.append('..')
 from app.viewsC import *
-
 
 class Framework:
 
@@ -9,6 +10,7 @@ class Framework:
         self.fronts = fronts
 
     def __call__(self, environ, start_response):
+        print(f'environ = {environ}')
         path = environ['PATH_INFO']
 
         if not path.endswith('/'):
