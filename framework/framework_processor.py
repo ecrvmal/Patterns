@@ -1,7 +1,12 @@
 # from app.views import *
 from sys import path
-path.append('..')
-from app.viewsC import *
+
+from vmal_framework.app.views import PageNotFound404
+
+path.append('../')
+from app.views import *
+from framework.request_processing import RequestProcessing
+
 
 class Framework:
 
@@ -10,30 +15,36 @@ class Framework:
         self.fronts = fronts
 
     def __call__(self, environ, start_response):
-        print(f'environ = {environ}')
-        path = environ['PATH_INFO']
+        # print(f'environ = {environ}')
+        route = environ['PATH_INFO']
 
-        if not path.endswith('/'):
-            path = f'{path}/'
+        if not route.endswith('/'):
+            route = f'{route}/'
 
-        if path in self.routes:
-            view = self.routes[path]
+        if route in self.routes:
+            view = self.routes[route]
         else:
             view = PageNotFound404()
 
         # ------------------- Front Controller ---------------------#
-        # method_list = [func for func in dir(FrontControllers) if callable(getattr(FrontControllers, func))
-        #                and not func.startswith("__")]
-        # print(f'method_list : {method_list}')
 
         request = {}
         for front in self.fronts:
             front(request)
-        print(request)
+        RequestProcessing.get_method(environ, request)
+        print(f'method : {request["method"]}       ', end='')
+        if request['method'] == 'GET':
+            RequestProcessing.process_get_request(environ, request)
+            print(f' request_data : {request["data"]}')
+        if request['method'] == 'POST':
+            RequestProcessing.process_post_request(environ, request)
+            print(f'request_params: {request["request_params"]}')
+
+
         # ------------------- end of Front Controller ---------------------#
 
         # --------------------   Page Controller --------------------------#
-        # code, body = view(request)
+
         code, body = view(request)
         # --------------------   End of Page Controller --------------------------#
 

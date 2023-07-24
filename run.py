@@ -2,9 +2,9 @@ import os
 import sys
 from wsgiref.simple_server import make_server
 sys.path.append('../')
-from framework.processor import Framework
+from framework.framework_processor import Framework
 from app.urls import routes
-from framework.front_controllersF import fronts
+from framework.front_controllers import fronts
 
 
 

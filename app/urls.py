@@ -1,4 +1,4 @@
-from app.viewsC import *
+from app.views import *
 
 
 routes = {
