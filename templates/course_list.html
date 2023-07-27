@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}
+'Architecture Bureau ARCORE - courses'
+{% endblock %}
+{% block style %}
+{% include "inc_style.html" %}
+{% endblock %}
+{% block header %}
+{% include "inc_header.html" %}
+{% endblock %}
+{% block body %}
+
+
+<div id="main">
+    <div id="site_content">
+        <br>
+        <div>
+            <h4><a href="/"> to Main </a></h4>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h1>List of courses in category "{{name}}" </h1>
+            <br>
+            {% if course_list == [] %}
+            <h2> No Courses found </h2>
+            {% else %}
+            <ul>
+                {% for course in course_list %}
+                <li>
+                    {{course.name}} <span>
+            <a href="/course_copy/?name={{course.name}}">Copy Course</a>
+        </span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        <div>
+            <br>
+            <br>
+            <h4><a href="/course_create/?id={{id}}"> Create new Course</a></h4>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "inc_footer.html" %}
+{% endblock %}

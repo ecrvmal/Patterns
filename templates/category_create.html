@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}
+'Architecture Bureau ARCORE - contacts'
+{% endblock %}
+{% block style %}
+{% include "inc_style.html" %}
+{% endblock %}
+{% block header %}
+{% include "inc_header.html" %}
+{% endblock %}
+{% block body %}
+
+<div id="main">
+    <div id="site_content">
+        <br>
+        <div>
+            <h3><a href="/"> to Main </a></h3>
+        </div>
+        <div>
+            <h3><a href="/category_list/?id={{id}}">Back to Category List</a></h3>
+        </div>
+        <br>
+        <br>
+        <div>
+
+            <br>
+            <h1> Category Creation </h1>
+            <br>
+            <form action="" method="post">
+                <div class="form_settings">
+                    <p>
+                        <span>New Category Name : </span>
+                        <input class="contact" type="text" name="category_name" placeholder="Category Name"/>
+                    </p>
+
+                    <!--
+                    <p>
+                        <span>Location</span>
+                        <select name="location" id="location">
+                            <option value="msk">Moscow</option>
+                            <option value="spb">St.Petersburg</option>
+                            <option value="ny">New York</option>
+                        </select>
+                    </p>
+                    -->
+                    <p style="padding-top: 15px">
+                        <span>&nbsp;</span>
+                        <input
+                                class="submit"
+                                type="submit"
+                                name="course_submitted"
+                                value="submit"
+                        />
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "inc_footer.html" %}
+{% endblock %}

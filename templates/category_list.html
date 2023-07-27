@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}
+'Architecture Bureau ARCORE - courses'
+{% endblock %}
+{% block style %}
+{% include "inc_style.html" %}
+{% endblock %}
+{% block header %}
+{% include "inc_header.html" %}
+{% endblock %}
+{% block body %}
+<div id="main">
+    <div id="site_content">
+        <br>
+        <div>
+            <h4><a href="/"> to Main </a></h4>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h1>List of Categories" </h1>
+            <br>
+            {%if cat_list == [] %}
+            <h2> No Categories found </h2>
+            {% else %}
+            <ul>
+                {% for cat in cat_list %}
+                <li>
+                    {{cat.name}} <span> Number of Courses : {{cat.course_count()}} </span>
+                    <a href="/courses_list/?id={{cat.id}}">Show Courses</a>
+                </li>
+                {% endfor %}
+            </ul>
+
+            {% endif %}
+            <br>
+            <br>
+        </div>
+        <div>
+            <ul>
+                <li>
+                    <h4><a href="/courses_list/">Course List</a></h4>
+                </li>
+                <li>
+                    <h4><a href="/category_create/">Create Category</a></h4>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "inc_footer.html" %}
+{% endblock %}

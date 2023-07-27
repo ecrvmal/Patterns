@@ -26,11 +26,14 @@ class Framework:
         else:
             view = PageNotFound404()
 
-        # ------------------- Front Controller ---------------------#
-
         request = {}
+
+        # ------------------- Front Controller ---------------------#
         for front in self.fronts:
             front(request)
+        # ------------------- end of Front Controller ---------------------#
+
+        # --------------------   Page Controller --------------------------#
         RequestProcessing.get_method(environ, request)
         print(f'method : {request["method"]}       ', end='')
         if request['method'] == 'GET':
@@ -40,13 +43,8 @@ class Framework:
             RequestProcessing.process_post_request(environ, request)
             print(f'request_params: {request["request_params"]}')
 
-
-        # ------------------- end of Front Controller ---------------------#
-
-        # --------------------   Page Controller --------------------------#
-
         code, body = view(request)
         # --------------------   End of Page Controller --------------------------#
 
         start_response(code, [('Content-Type', 'text/html')])
-        return [body.encode()]
+        return [body.encode('utf-8')]
