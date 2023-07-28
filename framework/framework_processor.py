@@ -20,9 +20,11 @@ class Framework:
 
         if not route.endswith('/'):
             route = f'{route}/'
+            # print(f'route = {route}')
 
         if route in self.routes:
             view = self.routes[route]
+            # print(f'view: {view}')
         else:
             view = PageNotFound404()
 

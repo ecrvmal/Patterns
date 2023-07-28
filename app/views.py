@@ -1,24 +1,35 @@
 from framework.templator import render
 from framework.engine import Engine, Logger
 from framework.request_processing import RequestProcessing
+from framework.decor import AppRoute, Timing
+
 
 logger = Logger('views')
 engine = Engine()
 
-class IndexView:
+# routes = {}
+
+
+@AppRoute(url='/')
+class Index:
+    @Timing(name='Index')
     def __call__(self, request):
         # print(f'   view : cl IndexView  ;              request : {request} ')
         return '200 OK', render('index.html', date=request.get('date'))
         # return '200 OK', render('index.html')
 
 
+@AppRoute(url='/contacts/')
 class ContactsView:
+    @Timing(name='/Contacts/')
     def __call__(self, request):
         # print(f'   view : cl ContactsView;       request : {request} ')
         return '200 OK', render('contacts.html', date=request.get('date'))
 
 
+@AppRoute(url='/about/')
 class AboutView:
+    @Timing(name='/about/')
     def __call__(self, request):
         # print(f'   view : cl ContactsView;       request : {request} ')
         return '200 OK', render('about.html', date=request.get('date'))
@@ -29,7 +40,9 @@ class AboutView:
 #         # print(f'   view : about_view  ;         request : {request}  ')
 #         return '200 OK', render('admin.html', date=request.get('date'))
 
+@AppRoute(url='/courses_list/')
 class CoursesList:
+    @Timing(name='/courses_list/')
     def __call__(self, request):
         logger.log("CoursesList")
         try:
@@ -60,10 +73,11 @@ class CoursesList:
                                     date=request.get('date'))
 
 
-
+@AppRoute(url='/course_create/')
 class CourseCreate:
     category_id = 0
 
+    @Timing(name='/course_create/')
     def __call__(self, request):
         if request['method'] == "GET":
             logger.log('course_create Method_get')
@@ -95,6 +109,8 @@ class CourseCreate:
         if request['method'] == "POST":
             logger.log('course_create Method_POST')
             request_params = request['request_params']
+            print(f'request params : {request_params}')
+            print(f'category_id: {self.category_id}')
             new_course_name = request_params['course_name']
             new_course_name = engine.decode_value(new_course_name)
             existing_course = None
@@ -118,8 +134,9 @@ class CourseCreate:
 
 
 
-
+@AppRoute(url='/course_copy/')
 class CourseCopy:
+    @Timing(name='/course_copy/')
     def __call__(self, request):
         # print(f'request = {request}')
         logger.log('Course_Copy')
@@ -140,7 +157,9 @@ class CourseCopy:
                                     id=cat.cat_id,
                                     date=request.get('date'))
 
+@AppRoute(url='/category_list/')
 class CategoryList:
+    @Timing(name='/category_list/')
     def __call__(self, request):
         logger.log('List of Categories')
         return '200 OK', render('category_list.html',
@@ -148,7 +167,10 @@ class CategoryList:
                                 date=request.get('date'))
 
 
+@AppRoute(url='/category_create/')
 class CategoryCreate:
+
+    @Timing(name='/category_create/')
     def __call__(self, request):
 
         if request['method'] == 'POST':
@@ -181,6 +203,7 @@ class CategoryCreate:
 
 
 class PageNotFound404:
+    @Timing(name='/PageNotFound/')
     def __call__(self, request):
         logger.log('PageNotFound404')
         return '404 WHAT', render('page_not_found.html', date=request.get('date'))
