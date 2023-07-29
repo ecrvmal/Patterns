@@ -64,10 +64,17 @@ class DebugApplication(Framework):
         self.application = Framework(routes_obj, fronts_obj)
         super().__init__(routes_obj, fronts_obj)
 
-    def __call__(self, env, start_response):
+    def __call__(self, *args, **kwargs ):
+    # def __call__(self, env, start_response):  # these args need to run application
         print('DEBUG MODE')
-        pprint(env)
-        return self.application(env, start_response)
+        print('args')
+        pprint(args)
+
+        print('kwargs')
+        pprint(kwargs)
+
+        return self.application(*args, **kwargs)    # these args taken from __call__ method
+        # return self.application(env, start_response)
 
 
 # Новый вид WSGI-application.
