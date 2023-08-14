@@ -1,6 +1,8 @@
 from copy import deepcopy
 from quopri import decodestring
 
+from framework.patterns import Subject, FileWriter
+
 
 class Singleton(type):
 
@@ -22,11 +24,13 @@ class Singleton(type):
 
 
 class Logger(metaclass=Singleton):
-    def __init__(self, name):
+    def __init__(self, name, writer=FileWriter()):
         self.name = name
+        self.writer = writer
 
     def log(self, text):
-        print(f'Logger {self.name} ------ {text}')
+        log_text = f'log --> {text}'
+        self.writer.write(log_text)
 
 
 class User:
@@ -40,8 +44,10 @@ class Teacher(User):
 
 
 class Student(User):
-    pass
 
+    def __init__(self, name, surname):
+        self.courses =[]
+        super().__init__(name, surname)
 
 class UserFactory:
     user_types = {
@@ -59,13 +65,21 @@ class CoursePrototype:
         return deepcopy(self)
 
 
-class Course(CoursePrototype):
+class Course(CoursePrototype, Subject):
     def __init__(self, name, category):
         self.name = name
         self.category = category
         self.category.courses.append(self)
+        self.students = []
+        super().__init__()
 
+    def __getitem__(self, item):
+        return self.students[item]
 
+    def add_student(self, student: Student):
+        self.students.append(student)
+        student.courses.append(self)
+        self.notify()
 
 
 class InteractiveCourse(Course):

@@ -1,18 +1,23 @@
+
+
 from framework.templator import render
 from framework.engine import Engine, Logger
 from framework.request_processing import RequestProcessing
 from framework.decor import AppRoute, Timing
 
+from framework.patterns import ListView, CreateView, Serializer, NotifierSMS, NotifierEMAIL, ConsoleWriter
 
-logger = Logger('views')
+# logger = Logger('views')
+
 engine = Engine()
 
 # routes = {}
+logger = Logger('main', ConsoleWriter())
 
 
 @AppRoute(url='/')
 class Index:
-    @Timing(name='Index')
+    # @Timing(name='Index')
     def __call__(self, request):
         # print(f'   view : cl IndexView  ;              request : {request} ')
         return '200 OK', render('index.html', date=request.get('date'))
@@ -21,7 +26,7 @@ class Index:
 
 @AppRoute(url='/contacts/')
 class ContactsView:
-    @Timing(name='/Contacts/')
+    # @Timing(name='/Contacts/')
     def __call__(self, request):
         # print(f'   view : cl ContactsView;       request : {request} ')
         return '200 OK', render('contacts.html', date=request.get('date'))
@@ -29,7 +34,7 @@ class ContactsView:
 
 @AppRoute(url='/about/')
 class AboutView:
-    @Timing(name='/about/')
+    # @Timing(name='/about/')
     def __call__(self, request):
         # print(f'   view : cl ContactsView;       request : {request} ')
         return '200 OK', render('about.html', date=request.get('date'))
@@ -40,9 +45,15 @@ class AboutView:
 #         # print(f'   view : about_view  ;         request : {request}  ')
 #         return '200 OK', render('admin.html', date=request.get('date'))
 
+@AppRoute(url='/students_list/')
+class StudentsListView:
+    queryset = engine.students
+    template_name = 'students_list.html'
+
+
 @AppRoute(url='/courses_list/')
 class CoursesList:
-    @Timing(name='/courses_list/')
+    # @Timing(name='/courses_list/')
     def __call__(self, request):
         logger.log("CoursesList")
         try:
@@ -77,7 +88,7 @@ class CoursesList:
 class CourseCreate:
     category_id = 0
 
-    @Timing(name='/course_create/')
+    # @Timing(name='/course_create/')
     def __call__(self, request):
         if request['method'] == "GET":
             logger.log('course_create Method_get')
@@ -124,6 +135,9 @@ class CourseCreate:
 
                     course = engine.create_course('recorded', new_course_name, category)
                     engine.courses.append(course)
+                    course.observers.append(NotifierSMS)
+                    course.observers.append(NotifierEMAIL)
+
 
             return '200 OK', render('course_list.html',
                                     course_list=category.courses,
@@ -136,7 +150,7 @@ class CourseCreate:
 
 @AppRoute(url='/course_copy/')
 class CourseCopy:
-    @Timing(name='/course_copy/')
+    # @Timing(name='/course_copy/')
     def __call__(self, request):
         # print(f'request = {request}')
         logger.log('Course_Copy')
@@ -159,7 +173,7 @@ class CourseCopy:
 
 @AppRoute(url='/category_list/')
 class CategoryList:
-    @Timing(name='/category_list/')
+    # @Timing(name='/category_list/')
     def __call__(self, request):
         logger.log('List of Categories')
         return '200 OK', render('category_list.html',
@@ -203,14 +217,56 @@ class CategoryCreate:
 
 
 class PageNotFound404:
-    @Timing(name='/PageNotFound/')
+    # @Timing(name='/PageNotFound/')
     def __call__(self, request):
         logger.log('PageNotFound404')
         return '404 WHAT', render('page_not_found.html', date=request.get('date'))
 
-#
-# class Other:
-#
-#     def __call__(self):
-#         return '200 OK', [b'other']
-#         return '200 OK', [b'<h1> other </h1>']
+
+@AppRoute(url='student_list')
+class StudentListView(ListView):
+    queryset = engine.students
+    template_name = 'student_list.html'
+
+
+@AppRoute(url='student_create')
+class StudentCreateView:
+    template_name = 'student_create.html'
+
+    def create_obj(self, data: dict):
+        name = data['name']
+        name = engine.decode_value(name)
+        surname = data['name']
+        surname = engine.decode_value(surname)
+        new_obj = engine.create_user('student', name, surname)
+
+@AppRoute(url = '/student_add/')
+class AddStudentByCourseCreateView(CreateView):
+    template_name = 'student_add.html'
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['courses'] = engine.courses
+        context['students'] = engine.students
+        return context
+
+    def create_obj(self, data: dict):
+        course_name = data['course_name']
+        course_name = engine.decode_value(course_name)
+        course = engine.get_course(course_name)
+        student_name = data['student_name']
+        student_name = engine.decode_value(student_name)
+        student_surname = data['student_surname']
+        student_surname = engine.decode_value(student_surname)
+        student = engine.get_student(student_name)
+        course.add_student(student)
+
+
+@AppRoute(url='/api/')
+class CourseApi:
+    # @Timing(name='CourseApi')
+    def __call__ (self, request):
+        return '200 OK', Serializer(engine.courses).save()
+
+
+

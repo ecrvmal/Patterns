@@ -1,9 +1,9 @@
 from jinja2 import Template, FileSystemLoader
 from jinja2.environment import Environment
+
 import os
 import sys
-from pathlib import Path
-
+# sys.path.append('../')
 
 def render(template_name, folder='templates', **kwargs):
     """
@@ -28,8 +28,10 @@ def render(template_name, folder='templates', **kwargs):
 
     # ------------------ New Templator -----------------------------
     env = Environment()
+
     env.loader = FileSystemLoader(folder)
     template = env.get_template(template_name)
+    print(template)
     return template.render(**kwargs)
 
 if __name__ == "__main__":

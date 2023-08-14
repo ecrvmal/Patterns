@@ -2,8 +2,8 @@
 from pprint import pprint
 from sys import path
 
-from vmal_framework.app.views import PageNotFound404
-from vmal_framework.framework.templator import render
+from app.views import PageNotFound404
+from framework.templator import render
 
 path.append('../')
 from app.views import *
@@ -22,7 +22,7 @@ class Framework:
 
         if not route.endswith('/'):
             route = f'{route}/'
-            # print(f'route = {route}')
+            print(f'route = {route}')
 
         if route in self.routes:
             view = self.routes[route]
