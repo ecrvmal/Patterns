@@ -13,8 +13,8 @@ from pprint import pprint
 
 class RunOperation:
     def __init__(self):
-        # print('routes:')
-        # pprint(routes)
+        print('routes:')
+        pprint(routes)
         self.application = Framework(routes, fronts)
         with make_server('', 8000, self.application) as httpd:
             print("Serving on port 8000...")

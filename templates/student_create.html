@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}
+'Architecture Bureau ARCORE - Course Create'
+{% endblock %}
+{% block style %}
+{% include "inc_style.html" %}
+{% endblock %}
+{% block header %}
+{% include "inc_header.html" %}
+{% endblock %}
+{% block body %}
+<div id="main">
+    <div id="site_content">
+        <br>
+        <div>
+            <a href="/"> to Main </a>
+        </div>
+        <div>
+            <a href="/students_list/">Back to Student List</a>
+        </div>
+        <br>
+    
+        <div>
+            <h1>Creation of Student</h1>
+            <form method="post">
+                <div class="form_settings">
+                    <p>
+                 <span>Name    </span>
+                <input class="contact" type="text" name="name" placeholder="Name"> <br>
+                    </p>
+                    <p>
+                 <span>Surname</span>
+                <input class="contact" type="text" name="surname" placeholder="Surname"> <br>
+                    </p>
+                    <p style="padding-top: 15px">
+                 <span>        </span>
+                <button class="submit" type="submit">Submit</button>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "inc_footer.html" %}
+{% endblock %}

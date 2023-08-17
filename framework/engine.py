@@ -131,6 +131,11 @@ class Engine:
     @staticmethod
     def create_user(type_, name, surname):
         return UserFactory.create_user(type_, name, surname)
+    
+    def get_student_by_name(self, name) -> Student:
+        for item in self.students:
+            if item.name == name:
+                return item
 
     @staticmethod
     def create_category(name,
@@ -140,7 +145,7 @@ class Engine:
                         # category
                         )
 
-    def find_category(self, id_):
+    def find_category_by_id(self, id_):
         for cat in self.categories:
             if cat.id == id_:
                 return cat
@@ -156,9 +161,10 @@ class Engine:
         str_coded = decodestring(str_b)
         return str_coded.decode('UTF-8')
 
-    def get_course_by_name(self, course_name):
+    def get_course_by_name(self, course_name) -> Course :
         for crs in self.courses:
             if crs.name == course_name:
                 return crs
+            
 
 

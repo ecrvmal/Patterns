@@ -22,19 +22,20 @@
         <br>
         <div>
 
-
+{#
             {% if message != '' %}
                         <br>
-            <h3> {{message}}</h3>
+            <h4> {{message}}</h4>
                         <br>
             {% else %}
+            #}
                         <br>
             <h1> Course Creation in Category "{{name}}" </h1>
             <br>
             <form action="" method="post">
                 <div class="form_settings">
                     <p>
-                        <span>Name</span>
+                        <span>Course Name</span>
                         <input class="contact" type="text" name="course_name" placeholder="Course Name"/>
                     </p>
 
@@ -59,7 +60,7 @@
                     </p>
                 </div>
             </form>
-            {% endif %}
+{#          {% endif %}-->              #}
 
 
         </div>

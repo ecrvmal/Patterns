@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}
+'Architecture Bureau ARCORE - Course Create'
+{% endblock %}
+{% block style %}
+{% include "inc_style.html" %}
+{% endblock %}
+{% block header %}
+{% include "inc_header.html" %}
+{% endblock %}
+{% block body %}
+<div id="main">
+    <div id="site_content">
+        <br>
+        <div>
+            <li>
+                <a href="/students_list/">List of Students</a>
+            </li>
+            <li>
+                <a href="/student_create/">Create Student</a>
+            </li>
+        </div>
+        <h1>Add student to Course</h1>
+        <form method="post">
+            <select size="3" name="course_name">
+                {% for item in courses %}
+                <option value="{{item.name}}">{{item.name}}</option>
+                {% endfor %}
+            </select>
+            <select size="3" name="student_name">
+                {% for item in students %}
+                <option value="{{item.name}}">{{item.name}} {{item.surname}}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Submit to Course</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "inc_footer.html" %}
+{% endblock %}

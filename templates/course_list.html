@@ -23,7 +23,7 @@
             <h1>List of courses in category "{{name}}" </h1>
             <br>
             {% if course_list == [] %}
-            <h2> No Courses found </h2>
+            <h4> No Courses found </h4>
             {% else %}
             <ul>
                 {% for course in course_list %}
@@ -39,7 +39,9 @@
         <div>
             <br>
             <br>
-            <h4><a href="/course_create/?id={{id}}"> Create new Course</a></h4>
+            {% if id != 0 %}
+        <h4><a href="/course_create/?id={{id}}"> Create new Course</a></h4>
+            {% endif %}
         </div>
     </div>
 </div>

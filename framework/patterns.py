@@ -10,7 +10,11 @@ class Observer:
 
 class Subject:
     def __init__(self):
-        self.observers = []
+        self.observers = set()
+
+    def attach(self, observer):
+        observer._subject = self
+        self.observers.add(observer)
 
     def notify(self):
         for item in self.observers:
@@ -40,13 +44,15 @@ class Serializer:
     def load(self, data):
         return loads(data)
 
-    # --------------------- Templates below ----------------------
+# --------------------- Templates below ----------------------
 
 
 class TemplateView:
     template_name = 'template.html'
 
     def get_context_data(self):
+        # context = {'request_data': request['data']}
+        # print(f'get_context_data context : {context }')
         return {}
 
     def get_template(self):
@@ -65,6 +71,8 @@ class ListView(TemplateView):
     queryset = []
     template_name = 'list.html'
     context_object_name = 'objects_list'
+    context_message = ''
+    context_category = ''
 
     def get_queryset(self):
         print(f'queryset: {self.queryset}')
@@ -73,18 +81,31 @@ class ListView(TemplateView):
     def get_context_object_name(self):
         return self.context_object_name
 
+    def get_context_message(self):
+        return self.context_message
+
+    def get_context_category(self):
+        return self.context_category
+
     def get_context_data(self):
         queryset = self.get_queryset()
         context_object_name = self.get_context_object_name()
+        context_message = self.get_context_message()
+        context_category = self.get_context_category()
         context = {context_object_name: queryset}
+        context['message'] = ""
+        context['category'] = None
+
         return context
 
 
 class CreateView(TemplateView):
     template_name = 'create.html'
+    message = ''
 
     def get_request_data(self, request):
-        return request['data']
+        # print(f'request_params : {request["request_params"]}')
+        return request['request_params']
 
     def create_obj(self, data):
         pass

@@ -13,40 +13,33 @@
     <div id="site_content">
         <br>
         <div>
-            <h4><a href="/"> to Main </a></h4>
+            <h4>
+                <a href="/student_create/">Create Student </a>
+            </h4>
+            <h4>
+                <a href="/student_add/">Add Student to Course</a>
+            </h4>
         </div>
-        <br>
-        <br>
+        <h1>List of Students</h1>
         <div>
-            <h1>List of Categories </h1>
-            <br>
             {%if objects_list == [] %}
-            <h4> No Categories found </h4>
+            <h4> No Students found </h4>
             {% else %}
             <ul>
                 {% for item in objects_list %}
                 <li>
-                    {{item.name}} <span> Number of Courses : {{item.course_count()}} </span>
-                    <a href="/courses_list/?id={{item.id}}">Show Courses</a>
+                    {{item.name}} {{item.surname}}
+                    {% for course in item.courses %}
+                    {{course.name}}
+                    {% endfor %}
                 </li>
                 {% endfor %}
             </ul>
-
             {% endif %}
-            <br>
-            <br>
-        </div>
-        <div>
-            <ul>
-                <li>
-                    <h4><a href="/category_create/">Create Category</a></h4>
-                </li>
-            </ul>
 
-
-        </div>
     </div>
-</div>
+    </div>
+    </div>
 {% endblock %}
 {% block footer %}
 {% include "inc_footer.html" %}
