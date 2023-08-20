@@ -20,6 +20,7 @@
         <br>
         <br>
         <div>
+            <h4> ID = {{id}}</h4>
             <h1>List of courses in category "{{name}}" </h1>
             <br>
             {% if course_list == [] %}
@@ -39,6 +40,7 @@
         <div>
             <br>
             <br>
+
             {% if id != 0 %}
         <h4><a href="/course_create/?id={{id}}"> Create new Course</a></h4>
             {% endif %}
