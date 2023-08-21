@@ -328,3 +328,8 @@ log --> CoursesList
 log --> CoursesList 
 log --> CoursesList 
 log --> CoursesList 
+log --> PageNotFound404 
+log --> CoursesList 
+log --> CoursesList 
+log --> PageNotFound404 
+log --> CoursesList 

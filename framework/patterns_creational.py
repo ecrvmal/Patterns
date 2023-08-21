@@ -125,17 +125,14 @@ class Category(DomainObject):
         #     result += self.category.course_count()
         return result
 
+
 class Student2CourseLink(DomainObject):
     def __init__(self, student, course):
         self.id = None
         self.student = student
         self.course = course
 
-    def stud_2_course_link_update(self, stud_id, course_id):
-        student = student_get_by_id(stud_id)
-        course = course_get_by_id(course_id)
-        course.students.append(student)
-        student.courses.append(course)
+
 
 class Engine:
     def __init__(self):
@@ -189,12 +186,18 @@ class Engine:
                 return item
         raise ValueError(f'Student with id {cat_id} not found')
 
-    def course_get_by_id(self, course_id):
-        print(f'searching course #{course_id} ')
+    def course_get_by_name(self, course_name):
+        print(f'searching course named:{course_name} ')
         for item in self.courses:
-            if item.id == course_id:
+            if item.name == course_name:
                 return item
-        raise ValueError(f'Course with id {cat_id} not found')
+        raise ValueError(f'Course with namae {course_name} not found')
+
+    def stud_2_course_link_update(self, stud_id, course_id):
+        student = self.student_get_by_id(stud_id)
+        course = self.course_get_by_id(course_id)
+        course.students.append(student)
+        student.courses.append(course)
 
     @staticmethod
     def student_2_course_link_create(student, course):
@@ -207,10 +210,19 @@ class Engine:
         str_coded = decodestring(str_b)
         return str_coded.decode('UTF-8')
 
-    def get_course_by_name(self, course_name) -> Course :
+    def course__get_by_name(self, course_name) -> Course :
         for crs in self.courses:
             if crs.name == course_name:
                 return crs
+
+    def courses_get_by_cat_id(self, cat_id):
+        result = []
+        cat = self.category_get_by_id()
+        for crs in self.courses:
+            if crs.category == cat:
+                result.append(crs)
+        return result
+
 
 
 connection = connect('framework.sqlite')
@@ -275,6 +287,19 @@ class ObjectMapper():
         else:
             raise RecordNotFoundException(f'record with id #{id} not found')
 
+    def get_object_id_by_name(self, obj_name, table_name):
+        statement = f'SELECT id, name FROM {table_name} '
+        self.cursor.execute(statement, ())
+        result = self.cursor.fetchall()
+        if result:
+            for item in result:
+                print(f'get_id_by_name item:{item}')
+                if item[1] == obj_name:
+                    return item[0]
+        else:
+            raise RecordNotFoundException(f'Category with name {obj_name} not found')
+
+
     def object_insert(self, obj):
         if isinstance(obj, Student):
             statement = f'INSERT INTO {self.table_name} (name, surname) VALUES (?,?)'
@@ -285,6 +310,9 @@ class ObjectMapper():
         elif isinstance(obj, Course):
             statement = f'INSERT INTO {self.table_name} (name, category_id) VALUES (?,?)'
             self.cursor.execute(statement, (obj.name, obj.category.id))
+        elif isinstance(obj, Student2CourseLink):
+            statement = f'INSERT INTO {self.table_name} (student_id, course_id) VALUES (?,?)'
+            self.cursor.execute(statement, (obj.student.id, obj.course.id))
         else:
             raise ValueError('object to insert to DB is of unknown category')
         try:
@@ -324,11 +352,7 @@ class ObjectMapper():
         except Exception as e:
             raise DbDeleteException(e.args)
 
-    def courses_get_by_cat_id(self, cat_id):
-        statement = f'SELECT id, name FROM courses WHERE category_id = ?'
-        self.cursor.execute(statement, (cat_id,))
-        data = self.cursor.fetchall()
-        return data
+
 
     def student_2_course_link_insert(self, student, course):
         statement = f'INSERT INTO student_2_course (student_id, course_id) VALUES (?,?)'
@@ -353,6 +377,7 @@ class MapperRegistry:
         'students': ObjectMapper,
         'categories': ObjectMapper,
         'courses': ObjectMapper,
+        'student_2_course_link': ObjectMapper,
     }
 
     @staticmethod
@@ -366,6 +391,9 @@ class MapperRegistry:
         if isinstance(obj, Course):
             # return ObjectMapper
             return ObjectMapper(connection, 'courses')
+        if isinstance(obj, Student2CourseLink):
+            # return ObjectMapper
+            return ObjectMapper(connection, 'student_2_course')
 
     @staticmethod
     def get_current_mapper(name):

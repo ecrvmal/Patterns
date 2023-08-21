@@ -121,9 +121,11 @@ class StudentCreateView(CreateView):
         surname = data['surname']
         surname = engine.decode_value(surname)
         new_student = engine.create_user('student', name, surname)
-        engine.students.append(new_student)
         new_student.mark_new()
         UnitOfWork.get_current().commit()
+        mapper = ObjectMapper(connection, 'categories')
+        new_student.id = mapper.get_object_id_by_name(new_student.name, 'students')
+        engine.students.append(new_student)
 
 
 @AppRoute(url='/courses_list/')
@@ -202,12 +204,14 @@ class CourseCreate(CreateView):
         course_name = engine.decode_value(course_name)
         category = engine.category_get_by_id(int(self.category_id))
         new_course = engine.create_course('recorded', course_name, category)
-        engine.courses.append(new_course)
         # engine.categories.courses.append(new_course)
         new_course.observers.add(email_notifier)
         new_course.observers.add(sms_notifier)
         new_course.mark_new()
         UnitOfWork.get_current().commit()
+        mapper = ObjectMapper(connection, 'courses')
+        new_course.id = mapper.get_object_id_by_name(new_course.name, 'categories')
+        engine.courses.append(new_course)
 
 
 @AppRoute(url='/course_copy/')
@@ -263,9 +267,16 @@ class CategoryCreate(CreateView):
         name = data['category_name']
         name = engine.decode_value(name)
         new_obj = engine.create_category(name)
-        engine.categories.append(new_obj)
         new_obj.mark_new()
         UnitOfWork.get_current().commit()
+        mapper = ObjectMapper(connection, 'categories')
+        new_obj.id = mapper.get_object_id_by_name(new_obj.name, 'categories')
+        engine.categories.append(new_obj)
+
+
+
+
+
 
 
 
@@ -292,15 +303,17 @@ class AddStudentByCourseCreateView(CreateView):
     def create_obj(self, data: dict):
         course_name = data['course_name']
         course_name = engine.decode_value(course_name)
-        course = engine.get_course_by_name(course_name)
+        course = engine.course_get_by_name(course_name)
         student_name = data['student_name']
         student_name = engine.decode_value(student_name)
         student = engine.student_get_by_name(student_name)
         course.add_student(student)
+        student.courses.append(course)
         new_link = engine.student_2_course_link_create(student, course)
         engine.student_2_course_links.append(new_link)
-        # new_link.mark_new()
-        # UnitOfWork.get_current().commit()
+        print(f'ngn2course links: {engine.student_2_course_links}')
+        new_link.mark_new()
+        UnitOfWork.get_current().commit()
 
 
 @AppRoute(url='/api/')
