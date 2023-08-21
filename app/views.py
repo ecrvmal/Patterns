@@ -60,7 +60,7 @@ print(f'engine.students: {engine.students}')
 mapper = ObjectMapper(connection, 'student_2_courses')
 link_data = mapper.student_2_course_links_get_all()
 for record in link_data:
-    student_id, course_id = record
+    id, student_id, course_id = record
     student = engine.student_get_by_id(int(student_id))
     course = engine.course_get_by_id(int(course_id))
     course.students.append(student)
