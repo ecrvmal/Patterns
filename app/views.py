@@ -17,9 +17,6 @@ from framework.patterns import ListView, CreateView, Serializer, NotifierSMS, No
 engine = Engine()
 
 
-
-
-
 # routes = {}
 logger = Logger('main')
 email_notifier = NotifierEMAIL()
@@ -72,7 +69,17 @@ for record in link_data:
 class Index:
     # @Timing(name='Index')
     def __call__(self, request):
+
         # print(f'   view : cl IndexView  ;              request : {request} ')
+        """
+        The __call__ function is the function that gets called when you call an instance of a class.
+        In this case, it's what gets called when you call IndexView().
+        It takes in a request and returns a response.
+
+        :param self: Represent the instance of the class
+        :param request: Get the date from the request
+        :return: A tuple of (status, headers, body)
+        """
         return '200 OK', render('index.html', date=request.get('date'))
         # return '200 OK', render('index.html')
 
@@ -104,7 +111,17 @@ class StudentsListView(ListView):
     # print(f'queryset : {queryset}')
     template_name = 'students_list.html'
     def get_queryset(self):
+
         # mapper = MapperRegistry.get_current_mapper('students')
+        """
+        The get_queryset function is used to retrieve the queryset that will be used
+        to create the ListView.  In this case, we are using a custom mapper function
+        to retrieve all students from our database and then returning them as a list.
+
+        :param self: Represent the instance of the object
+        :return: The list of all students in the database
+        :doc-author: Trelent
+        """
         mapper = ObjectMapper(connection, 'students')
         all_students = mapper.students_select_all()
         engine.students.clear()
@@ -117,6 +134,15 @@ class StudentCreateView(CreateView):
     template_name = 'student_create.html'
 
     def create_obj(self, data):
+
+        """
+        The create_obj function creates a new student object and adds it to the students list.
+        It also commits the changes to the database.
+
+        :param self: Refer to the object itself
+        :param data: Pass the data from the form to the create_obj function
+        :return: A new student object
+        """
         name = data['name']
         name = engine.decode_value(name)
         surname = data['surname']
@@ -201,6 +227,18 @@ class CourseCreate(CreateView):
             return super().__call__(request)
 
     def create_obj(self, data):
+        """
+        The create_obj function is used to create a new object in the database.
+            It takes as input a dictionary of data, and returns an object that has been created in the database.
+            The function first creates an instance of the Course class with name course_name, category category_id and type recorded.
+            Then it adds two observers: email_notifier and sms_notifier to this course's observer list.
+            Finally it marks this new course as 'new' using mark_new() method from ObserverMixin class.
+
+        :param self: Represent the instance of the class
+        :param data: Pass the data from the client to the server
+        :return: A new course object
+        :doc-author: Trelent
+        """
         course_name = data['course_name']
         course_name = engine.decode_value(course_name)
         category = engine.category_get_by_id(int(self.category_id))
@@ -265,6 +303,18 @@ class CategoryCreate(CreateView):
     template_name = 'category_create.html'
 
     def create_obj(self, data: dict):
+
+        """
+        The create_obj function is used to create a new object in the database.
+        It takes a dictionary as an argument, and uses it to create the new object.
+        The function then commits this change to the database using UnitOfWork, and
+        returns nothing.
+
+        :param self: Represent the instance of the class
+        :param data: dict: Get the name of the category from the user
+        :return: The new_obj object, which is a category instance
+        :doc-author: Trelent
+        """
         name = data['category_name']
         name = engine.decode_value(name)
         new_obj = engine.create_category(name)
@@ -275,12 +325,6 @@ class CategoryCreate(CreateView):
         engine.categories.append(new_obj)
 
 
-
-
-
-
-
-
 class PageNotFound404:
     # @Timing(name='/PageNotFound/')
     def __call__(self, request):
@@ -288,20 +332,37 @@ class PageNotFound404:
         return '404 WHAT', render('page_not_found.html', date=request.get('date'))
 
 
-
-
-
 @AppRoute(url='/student_add/')
 class AddStudentByCourseCreateView(CreateView):
     template_name = 'student_add.html'
 
     def get_context_data(self):
+        """
+        The get_context_data function is a method that Django calls when it needs to render the template.
+        It's passed a context object, which is an empty dictionary by default. You can add things to this dictionary
+        and they will be available in the template.
+
+        :param self: Refer to the instance of the class
+        :return: A dictionary of context variables
+        :doc-author: Trelent
+        """
         context = super().get_context_data()
         context['courses'] = engine.courses
         context['students'] = engine.students
         return context
 
     def create_obj(self, data: dict):
+
+        """
+        The create_obj function is used to create a new object in the database.
+        It takes as input a dictionary of data, and uses that data to create an object.
+        The function then returns the newly created object.
+
+        :param self: Refer to the instance of a class
+        :param data: dict: Get the data from the form
+        :return: A new link between a student and a course
+        :doc-author: Trelent
+        """
         course_name = data['course_name']
         course_name = engine.decode_value(course_name)
         course = engine.course_get_by_name(course_name)

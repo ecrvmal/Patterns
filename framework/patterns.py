@@ -14,6 +14,15 @@ class Subject:
         self.observers = set()
 
     def attach(self, observer):
+
+        """
+        The attach function adds observer to object.
+        In case the "notify"  event happens, the observer will send notify message"
+
+        :param self: Refer to the object itself
+        :param observer: Add the observer to the set of observers
+        :return: Nothing
+        """
         observer._subject = self
         self.observers.add(observer)
 
@@ -23,7 +32,14 @@ class Subject:
 
 
 class NotifierSMS(Observer):
+    """
+    The NotifierSMS function performs SMS sending in case event happens.
+    In case the "notify"  event happens, the notifier will send SMS message"
 
+    :param self: Refer to the object itself
+    :param observer: Add the observer to the set of observers
+    :return: Nothing
+    """
     def update(self, subject):
         print(f'SMS --> we have new student {subject.students[-1].name}')
 
@@ -52,14 +68,38 @@ class TemplateView:
     template_name = 'template.html'
 
     def get_context_data(self):
+
         # context = {'request_data': request['data']}
         # print(f'get_context_data context : {context }')
+        """
+        The get_context_data function is used to add extra context data to the template.
+        The context data can be accessed in the template using {{ variable_name }}.
+        :param self: Represent the instance of the object
+        :return: A dictionary of data that is passed to the template
+        """
         return {}
 
     def get_template(self):
+
+        """
+        The get_template function is a helper function that returns the template name.
+        This allows us to use the same view for multiple templates, and we can easily change
+        the template by changing this one variable.
+
+        :param self: Refer to the current instance of a class
+        :return: The name of the template that we want to use
+        """
         return self.template_name
 
     def render_template_with_context(self):
+        """
+        The render_template_with_context function is a helper function that takes the template name and context data
+        and returns an HTTP response with the rendered template. This function is used in conjunction with
+        the get_template and get_context_data functions to render templates.
+
+        :param self: Refer to the object itself
+        :return: A tuple
+        """
         template_name = self.get_template()
         context = self.get_context_data()
         return '200 OK', render(template_name, **context)

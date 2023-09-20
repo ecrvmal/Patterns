@@ -43,6 +43,15 @@ class Timing:
 
         def timeit(*args, **kwargs):
 
+            """
+            The timeit function is a decorator that wraps the method it's applied to.
+            It prints out how long the wrapped function takes to run, in milliseconds.
+
+            :param *args: Pass a variable number of arguments to a function
+            :param **kwargs: Pass keyworded, variable-length argument list to a function
+            :return: The result of the function
+            :doc-author: Trelent
+            """
             start = time()
             result = func(*args, **kwargs)
             delta = time() - start
