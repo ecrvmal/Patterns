@@ -62,9 +62,10 @@ link_data = mapper.student_2_course_links_get_all()
 for record in link_data:
     id, student_id, course_id = record
     student = engine.student_get_by_id(int(student_id))
-    course = engine.course_get_by_id(int(course_id))
-    course.students.append(student)
-    student.courses.append(course)
+    if course_id:
+        course = engine.course_get_by_id(int(course_id))
+        course.students.append(student)
+        student.courses.append(course)
 
 
 @AppRoute(url='/')
